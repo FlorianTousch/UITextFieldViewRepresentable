@@ -26,6 +26,8 @@ struct ContentView: View {
             HStack {
                 Text("UIKit")
                 UITextFieldViewRepresentable(text: $text)
+                    .updatePlaceholder("test")
+                    .updatePlaceholderColor(UIColor.orange)
                     .padding()
                     .frame(height: 55)
                     .background(.gray.opacity(0.3))
@@ -44,8 +46,8 @@ struct ContentView_Previews: PreviewProvider {
 struct UITextFieldViewRepresentable: UIViewRepresentable {
     
     @Binding var text: String
-    let placeholder: String
-    let placeholderColor: UIColor
+    var placeholder: String
+    var placeholderColor: UIColor
     
     init(text: Binding<String>, placeholder: String = "Placeholder", placeholderColor: UIColor = .blue) {
         self._text = text
@@ -73,6 +75,18 @@ struct UITextFieldViewRepresentable: UIViewRepresentable {
             ])
         textField.attributedPlaceholder = placeholder
         return textField
+    }
+    
+    func updatePlaceholder(_ text: String) -> UITextFieldViewRepresentable {
+        var viewRepresentable = self
+        viewRepresentable.placeholder = text
+        return viewRepresentable
+    }
+    
+    func updatePlaceholderColor(_ color: UIColor) -> UITextFieldViewRepresentable {
+        var viewRepresentable = self
+        viewRepresentable.placeholderColor = color
+        return viewRepresentable
     }
     
     // From UIKit to SwiftUI
