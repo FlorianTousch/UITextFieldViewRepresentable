@@ -7,15 +7,81 @@
 
 import SwiftUI
 
+// UIViewRepresentable: Convert UIView from UIKit to SwiftUI
+
 struct ContentView: View {
+    
+    @State private var text: String = ""
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            Text(text)
+            HStack {
+                Text("SwiftUI")
+                TextField("Type here..", text: $text)
+                    .padding()
+                    .frame(height: 55)
+                    .background(.gray.opacity(0.3))
+            }
+            HStack {
+                Text("UIKit")
+                UITextFieldViewRepresentable(text: $text)
+                    .padding()
+                    .frame(height: 55)
+                    .background(.gray.opacity(0.3))
+            }
+            
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct UITextFieldViewRepresentable: UIViewRepresentable {
+    
+    @Binding var text: String
+    
+    func makeUIView(context: Context) -> UITextField {
+        let textField = getTextField()
+        textField.delegate = context.coordinator
+        return textField
+    }
+    
+    // From SwiftUI to UIKit
+    func updateUIView(_ uiView: UITextField, context: Context) {
+        uiView.text = text
+    }
+    
+    private func getTextField() -> UITextField {
+        let textField = UITextField(frame: .zero)
+        let placeholder = NSAttributedString(
+            string: "Type here..",
+            attributes: [
+                .foregroundColor: UIColor.red
+            ])
+        textField.attributedPlaceholder = placeholder
+        return textField
+    }
+    
+    // From UIKit to SwiftUI
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(text: $text)
+    }
+    
+    class Coordinator: NSObject, UITextFieldDelegate {
+        
+        @Binding var text: String
+
+        init(text: Binding<String>) {
+            self._text = text
+        }
+        
+        func textFieldDidChangeSelection(_ textField: UITextField) {
+            text = textField.text ?? ""
+        }
     }
 }
