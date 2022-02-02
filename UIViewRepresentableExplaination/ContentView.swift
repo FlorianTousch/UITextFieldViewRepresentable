@@ -44,6 +44,14 @@ struct ContentView_Previews: PreviewProvider {
 struct UITextFieldViewRepresentable: UIViewRepresentable {
     
     @Binding var text: String
+    let placeholder: String
+    let placeholderColor: UIColor
+    
+    init(text: Binding<String>, placeholder: String = "Placeholder", placeholderColor: UIColor = .blue) {
+        self._text = text
+        self.placeholder = placeholder
+        self.placeholderColor = placeholderColor
+    }
     
     func makeUIView(context: Context) -> UITextField {
         let textField = getTextField()
@@ -59,9 +67,9 @@ struct UITextFieldViewRepresentable: UIViewRepresentable {
     private func getTextField() -> UITextField {
         let textField = UITextField(frame: .zero)
         let placeholder = NSAttributedString(
-            string: "Type here..",
+            string: placeholder,
             attributes: [
-                .foregroundColor: UIColor.red
+                .foregroundColor: placeholderColor
             ])
         textField.attributedPlaceholder = placeholder
         return textField
